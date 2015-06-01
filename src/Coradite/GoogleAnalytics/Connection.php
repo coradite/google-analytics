@@ -7,8 +7,10 @@
  * [Magic Freebies Redesign] VGoogleAnalytics.php
  */
 
+namespace Coradite\GoogleAnalytics;
 
 use Coradite\GoogleAnalytics\Client;
+use Coradite\GoogleAnalytics\Query;
 use Widop\HttpAdapter\CurlHttpAdapter;
 
 /**
@@ -16,7 +18,7 @@ use Widop\HttpAdapter\CurlHttpAdapter;
  *
  * Class VGoogleAnalytics
  */
-class Connection extends CApplicationComponent {
+class Connection extends \CApplicationComponent {
 
 
   //public $clientId;

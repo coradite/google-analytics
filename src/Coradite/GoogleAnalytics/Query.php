@@ -146,7 +146,7 @@ class Query
     public function setStartDate($startDate = null)
     {
         if ($startDate && is_string($startDate)) {
-            $startDate = new DateTime($startDate);
+            $startDate = new \DateTime($startDate);
         }
 
         $this->startDate = $startDate;
@@ -185,7 +185,7 @@ class Query
     public function setEndDate($endDate = null)
     {
         if ($endDate && is_string($endDate)) {
-            $endDate = new DateTime($endDate);
+            $endDate = new \DateTime($endDate);
         }
 
         $this->endDate = $endDate;
@@ -260,7 +260,7 @@ class Query
     {
         $this->metrics[] = $metric;
         if ($key){
-            $this->addKey($key);
+            $this->addMetricKey($key, $metric);
         }
 
         
