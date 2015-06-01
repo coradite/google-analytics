@@ -260,7 +260,7 @@ class Query
         $this->metrics = array();
 
         foreach ($metrics as $key => $metric) {
-            $this->addMetric($metric, $key);
+            $this->addMetric($metric);
             if (is_string($key)) {
                 $this->addCustomMetricKey($key, $metric);
             }
@@ -339,6 +339,7 @@ class Query
     {
         $this->dimensions[] = $dimension;
         if ($key) {
+
             $this->addCustomDimensionKey($key, $dimension);
         }
         

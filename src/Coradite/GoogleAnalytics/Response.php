@@ -137,7 +137,6 @@ class Response
             $this->rows = $response['rows'];
         }
 
-
         $this->customDimensionKeys = [];
         if ($query->getCustomDimensionKeys()) {
             $this->customDimensionKeys = $query->getCustomDimensionKeys();
@@ -327,6 +326,7 @@ class Response
     private function getCustomColumnKey($key)
     {
         $colHeader = $this->columnHeaders[$key];
+
         $colType = ucfirst(strtolower($colHeader['columnType']));
         $colKey = $colHeader['name'];
         $keys = $this->{'custom'.$colType.'Keys'};
@@ -345,11 +345,10 @@ class Response
             $results = [];
             foreach ($this->rows as $rowKey => $row) {
                 foreach ($row as $colKey => $value) {
-                    $colKey = $this->getCustomColumnKey($colKey);
+                    $colName = $this->getCustomColumnKey($colKey);
 
-                    $results[$rowKey][$colKey] = $value;
+                    $results[$rowKey][$colName] = $value;
                 }
-
             }
 
             $this->_results = $results;
