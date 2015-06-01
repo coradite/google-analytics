@@ -60,12 +60,21 @@ class Response
     /** @var array */
     protected $rows;
 
+    /** @var array */
+    protected $customDimensionKeys;
+
+    /** @var array */
+    protected $customMetricKeys;
+
+    /** @var array */
+    private $_results;
+
     /**
      * The google analytics response constructor.
      *
      * @param array $response The google analytics response.
      */
-    public function __construct(array $response)
+    public function __construct(array $response, $query)
     {
         $this->profileInfo = array();
         if (isset($response['profileInfo'])) {
@@ -127,6 +136,17 @@ class Response
         if (isset($response['rows'])) {
             $this->rows = $response['rows'];
         }
+
+
+        $this->customDimensionKeys = [];
+        if ($query->getCustomDimensionKeys()) {
+            $this->customDimensionKeys = $query->getCustomDimensionKeys();
+        }
+        $this->customMetricKeys = [];
+        if ($query->getCustomMetricKeys()) {
+            $this->customMetricKeys = $query->getCustomMetricKeys();
+        }
+
     }
 
     /**
@@ -304,25 +324,38 @@ class Response
         return $this->rows;
     }
 
+    private function getCustomColumnKey($key)
+    {
+        $colHeader = $this->columnHeaders[$key];
+        $colType = ucfirst(strtolower($colHeader['columnType']));
+        $colKey = $colHeader['name'];
+        $keys = $this->{'custom'.$colType.'Keys'};
+
+        if (isset($keys[$colKey])) {
+            $colKey = $keys[$colKey];
+        }
+
+        return $colKey;
+
+    }
+
     public function getResults()
     {
-        $rows = [];
-        print_r($this->query); die();
+        if (!$this->_results) {
+            $results = [];
+            foreach ($this->rows as $rowKey => $row) {
+                foreach ($row as $colKey => $value) {
+                    $colKey = $this->getCustomColumnKey($colKey);
 
-    //    foreach ($this->rows as $rowKey => $row) {
-    //      foreach ($row as $colKey => $value) {
-    //        $name = $this->query->columnHeaders[$colKey]->name;
-    //        if (is_array($keys) && isset($keys[$name])) {
-    //          $name = $keys[$name];
-    //        }
-    //
-    //        $rows[$rowKey][$name] = $value;
-    //      }
-    //
-    //    }
-    //
-    //
-    //    $query->rows = $rows;
+                    $results[$rowKey][$colKey] = $value;
+                }
+
+            }
+
+            $this->_results = $results;
+        }
+
+        return $this->_results;
     }
 
 }

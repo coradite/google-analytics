@@ -75,6 +75,6 @@ class Service
             throw GoogleAnalyticsException::invalidQuery(isset($json['error']) ? $json['error']['message'] : 'Invalid json');
         }
 
-        return new Response($json);
+        return new Response($json, $query);
     }
 }

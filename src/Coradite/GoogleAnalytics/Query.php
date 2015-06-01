@@ -58,10 +58,10 @@ class Query
     protected $callback;
 
     /** @var array */
-    protected $metricKeys;
+    protected $customMetricKeys;
 
     /** @var array */
-    protected $dimensionKeys;
+    protected $customDimensionKeys;
 
     /**
      * Creates a google analytics query.
@@ -85,8 +85,8 @@ class Query
         $this->prettyPrint = false;
 
         // results keys
-        $this->metricKeys = array();
-        $this->dimensionKeys = array();
+        $this->customMetricKeys = array();
+        $this->customDimensionKeys = array();
 
         //todo Make query if string or array is passed in.
 
@@ -194,18 +194,38 @@ class Query
         return $this;
     }
 
-    public function addMetricKey($key, $metric)
+    public function addCustomMetricKey($key, $metric)
     {
-        $this->MetricKeys[$metric] = $key;
+        $this->customMetricKeys[$metric] = $key;
 
         return $this;
     }
 
-    public function addDimensionKey($key, $dimension)
+    public function addCustomDimensionKey($key, $dimension)
     {
-        $this->DimensionKeys[$dimension] = $key;
+        $this->customDimensionKeys[$dimension] = $key;
 
         return $this;
+    }
+
+    /**
+     * Gets the google analytics query metrics.
+     *
+     * @return array The google analytics query metrics.
+     */
+    public function getCustomDimensionKeys()
+    {
+        return $this->customDimensionKeys;
+    }
+
+    /**
+     * Gets the google analytics query metrics.
+     *
+     * @return array The google analytics query metrics.
+     */
+    public function getCustomMetricKeys()
+    {
+        return $this->customMetricKeys;
     }
 
     /**
@@ -242,7 +262,7 @@ class Query
         foreach ($metrics as $key => $metric) {
             $this->addMetric($metric, $key);
             if (is_string($key)) {
-                $this->addMetricKey($key, $metric);
+                $this->addCustomMetricKey($key, $metric);
             }
         }
         
@@ -260,7 +280,7 @@ class Query
     {
         $this->metrics[] = $metric;
         if ($key){
-            $this->addMetricKey($key, $metric);
+            $this->addCustomMetricKey($key, $metric);
         }
 
         
@@ -301,7 +321,7 @@ class Query
         foreach ($dimensions as $key => $dimension) {
             $this->addDimension($dimension);
             if (is_string($key)) {
-                $this->addDimensionKey($key, $dimension);
+                $this->addCustomDimensionKey($key, $dimension);
             }
         }
         
@@ -319,7 +339,7 @@ class Query
     {
         $this->dimensions[] = $dimension;
         if ($key) {
-            $this->addDimensionKey($key, $dimension);
+            $this->addCustomDimensionKey($key, $dimension);
         }
         
         return $this;
