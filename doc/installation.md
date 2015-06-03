@@ -1,6 +1,6 @@
 # Installation
 
-To install the Wid'op Google Analytics library, you will need [Composer](http://getcomposer.org). It's a PHP 5.3+
+To install the Yii Google Analytics package, you will need [Composer](http://getcomposer.org). It's a PHP 5.3+
 dependency manager which allows you to declare the dependent libraries your project needs and it will install &
 autoload them for you.
 
@@ -16,12 +16,12 @@ $ sudo mv composer.phar /usr/local/bin/composer
 ## Define dependencies
 
 Create a ``composer.json`` file at the root directory of your project and simply require the
-``widop/google-analytics`` package:
+``coradite/yii-google-analytics`` package:
 
 ```
 {
     "require": {
-        "widop/google-analytics": "*"
+        "coradite/yii-google-analytics": "*"
     }
 }
 ```

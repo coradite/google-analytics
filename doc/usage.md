@@ -101,7 +101,7 @@ The first query allows you to return the `Coradite\GoogleAnalytics\Response` obj
 
 ## Response
 
-The response is a `Widop\GoogleAnalytics\Response` object which wraps all available informations:
+The response is a `coradite\GoogleAnalytics\Response` object which wraps all available informations:
 
 ``` php
 $profileInfo = $response->getProfileInfo();
@@ -119,8 +119,13 @@ $columnHeaders = $response->getColumnHeaders();
 $totalForAllResults = $response->getTotalsForAllResults();
 $hasRows = $response->hasRows();
 $rows = $response->getRows();
+```
+You can also use the following methods to return the different parts of the data. 
+Or simply to ensure the array has meaningful key value pairs.
+
+```php
 $rows = $response->getResults(); // All rows with meaningful column names
-$response->getFirstRow() // First row with meaningful column names
-$response->getColumn($key) // A specific column Excepts (A column number or ga:param name). Defaults to first column.
-$response->getFirstValue() // The value of the first column and row.
+$row = $response->getFirstRow() // First row with meaningful column names
+$column = $response->getColumn($key) // A specific column Excepts (A column number or ga:param name). Defaults to first column.
+$value = $response->getFirstValue() // The value of the first column and row.
 ```
