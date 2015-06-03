@@ -5,9 +5,9 @@ You can query the api in the following ways.
 
 ```php
 
-    // Return Response data
+    // Return Response data or entire response object
     
-    $report = Yii::app()->gapi->createCommand()
+    $response = Yii::app()->gapi->createCommand()
       ->setStartDate($date)
       ->setEndDate($date)
       ->setMetrics([
