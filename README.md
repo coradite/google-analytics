@@ -1,6 +1,6 @@
 # README
 
-[![Build Status](https://secure.travis-ci.org/coradite/yii-google-analytics.png)](http://travis-ci.org/coradite/yii-google-analytics)
+
 
 This is an adaption of the Wid'op Google Analytics library for use with Yii. 
 
