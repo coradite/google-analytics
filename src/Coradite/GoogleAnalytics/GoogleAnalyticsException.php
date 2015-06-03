@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Wid'op package.
+ * This file is adapted from a Wid'op package.
  *
  * (c) Wid'op <contact@widop.com>
  *
@@ -14,7 +14,7 @@ namespace Coradite\GoogleAnalytics;
 /**
  * Google Analytics exception.
  *
- * @author GeLo <geloen.eric@gmail.com>
+ * @author GeLo <geloen.eric@gmail.com> @
  */
 class GoogleAnalyticsException extends \Exception
 {
@@ -23,7 +23,7 @@ class GoogleAnalyticsException extends \Exception
      *
      * @param string $error The error message.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID ACCESS TOKEN" exception.
+     * @return GoogleAnalyticsException The "INVALID ACCESS TOKEN" exception.
      */
     public static function invalidAccessToken($error)
     {
@@ -35,7 +35,7 @@ class GoogleAnalyticsException extends \Exception
      *
      * @param string $path The private key file path.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID PRIVATE KEY FILE" exception.
+     * @return GoogleAnalyticsException The "INVALID PRIVATE KEY FILE" exception.
      */
     public static function invalidPrivateKeyFile($path)
     {
@@ -45,7 +45,7 @@ class GoogleAnalyticsException extends \Exception
     /**
      * Gets the "INVALID OPEN SSL EXTENSION" exception.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID OPEN SSL EXTENSION" exception.
+     * @return GoogleAnalyticsException The "INVALID OPEN SSL EXTENSION" exception.
      */
     public static function invalidOpenSslExtension()
     {
@@ -55,7 +55,7 @@ class GoogleAnalyticsException extends \Exception
     /**
      * Gets the "INVALID PKCS 12 FILE" exception.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID PKCS 12 FILE" exception.
+     * @return GoogleAnalyticsException The "INVALID PKCS 12 FILE" exception.
      */
     public static function invalidPKCS12File()
     {
@@ -65,7 +65,7 @@ class GoogleAnalyticsException extends \Exception
     /**
      * Gets the "INVALID PKCS 12 FORMAT" exception.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID PKCS 12 FORMAT" exception.
+     * @return GoogleAnalyticsException The "INVALID PKCS 12 FORMAT" exception.
      */
     public static function invalidPKCS12Format()
     {
@@ -75,7 +75,7 @@ class GoogleAnalyticsException extends \Exception
     /**
      * Gets the "INVALID PKCS 12 PKEY" exception.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID PKCS 12 PKEY" exception.
+     * @return GoogleAnalyticsException The "INVALID PKCS 12 PKEY" exception.
      */
     public static function invalidPKCS12PKey()
     {
@@ -85,7 +85,7 @@ class GoogleAnalyticsException extends \Exception
     /**
      * Gets the "INVALID PKCS 12 SIGNATURE" exception.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID PKCS 12 SIGNATURE" exception.
+     * @return GoogleAnalyticsException The "INVALID PKCS 12 SIGNATURE" exception.
      */
     public static function invalidPKCS12Signature()
     {
@@ -97,7 +97,7 @@ class GoogleAnalyticsException extends \Exception
      *
      * @param string $error The error message.
      *
-     * @return \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException The "INVALID QUERY" exception.
+     * @return GoogleAnalyticsException The "INVALID QUERY" exception.
      */
     public static function invalidQuery($error)
     {

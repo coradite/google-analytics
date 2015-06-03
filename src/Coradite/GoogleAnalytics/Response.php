@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Wid'op package.
+ * This file is adapted from a Wid'op package.
  *
  * (c) Wid'op <contact@widop.com>
  *
@@ -15,6 +15,7 @@ namespace Coradite\GoogleAnalytics;
  * Google Analytics Response.
  *
  * @author GeLo <geloen.eric@gmail.com>
+ * @author Coradite <coradite@gmail.com>
  */
 class Response
 {
@@ -61,21 +62,31 @@ class Response
     protected $rows;
 
     /** @var array */
-    protected $customDimensionKeys;
+    protected $command;
 
     /** @var array */
-    protected $customMetricKeys;
+    protected $customDimensionNames;
 
     /** @var array */
-    private $_results;
+    protected $customMetricNames;
+
+    /** @var array */
+    protected $results;
 
     /**
      * The google analytics response constructor.
      *
      * @param array $response The google analytics response.
      */
-    public function __construct(array $response, $query)
+    public function __construct(array $response, $command)
     {
+
+        $this->command = $command;
+
+        $this->customMetricNames = array_flip($this->command->getMetrics());
+
+        $this->customDimensionNames = array_flip($this->command->getDimensions());
+
         $this->profileInfo = array();
         if (isset($response['profileInfo'])) {
             $this->profileInfo = $response['profileInfo'];
@@ -137,16 +148,31 @@ class Response
             $this->rows = $response['rows'];
         }
 
-        $this->customDimensionKeys = [];
-        if ($query->getCustomDimensionKeys()) {
-            $this->customDimensionKeys = $query->getCustomDimensionKeys();
-        }
-        $this->customMetricKeys = [];
-        if ($query->getCustomMetricKeys()) {
-            $this->customMetricKeys = $query->getCustomMetricKeys();
+    }
+
+
+    /**
+     * @param integer $key Get the column name from column key.
+     *
+     * @return mixed Either google ga:param or a custom name specified.
+     */
+    protected function getColumnName($key)
+    {
+        $colHeader = $this->columnHeaders[$key];
+        $colType = ucfirst(strtolower($colHeader['columnType']));
+        $name = $colHeader['name'];
+        $keys = $this->{'custom'.$colType.'Names'};
+
+        if (isset($keys[$name])) {
+
+            $name = $keys[$name];
         }
 
+        return $name;
+
     }
+
+
 
     /**
      * Gets the profile info.
@@ -281,7 +307,7 @@ class Response
     /**
      * Gets the column headers.
      *
-     * The availbale informations are:
+     * The available informations are:
      *  - name: Name of the dimension or metric.
      *  - columnType: Column type.
      *  - dataType: Data type.
@@ -323,38 +349,78 @@ class Response
         return $this->rows;
     }
 
-    private function getCustomColumnKey($key)
-    {
-        $colHeader = $this->columnHeaders[$key];
-
-        $colType = ucfirst(strtolower($colHeader['columnType']));
-        $colKey = $colHeader['name'];
-        $keys = $this->{'custom'.$colType.'Keys'};
-
-        if (isset($keys[$colKey])) {
-            $colKey = $keys[$colKey];
-        }
-
-        return $colKey;
-
-    }
-
+    /**
+     * @return array All rows with meaningful column names
+     */
     public function getResults()
     {
-        if (!$this->_results) {
+        if (!$this->results) {
             $results = [];
             foreach ($this->rows as $rowKey => $row) {
                 foreach ($row as $colKey => $value) {
-                    $colName = $this->getCustomColumnKey($colKey);
-
+                    $colName = $this->getColumnName($colKey);
                     $results[$rowKey][$colName] = $value;
                 }
             }
 
-            $this->_results = $results;
+            $this->results = $results;
         }
 
-        return $this->_results;
+        return $this->results;
     }
+
+    /**
+     * @return array First row with meaningful column names
+     */
+    public function getFirstRow()
+    {
+
+        if ($this->getResults()) {
+            return array_values($this->getResults())[0];
+        }
+
+        return [];
+
+    }
+
+    /**
+     * @param int $column A column number or ga:param name. Defaults to first column.
+     *
+     * @return array The requested results column
+     * @throws \CException If column doesn't exist.
+     */
+    public function getColumn($column = 0)
+    {
+
+        $firstColumn = [];
+        $rows = $this->rows;
+
+        // Get column number if ga:param provided
+        if (is_string($column)) {
+            $column = $this->getColumnNumber($column);
+        }
+
+        //Loop through rows and get first column
+        foreach ($rows as $row) {
+            if (!isset(array_values($row)[$column])) {
+                throw new \CException("Column '$column' not found.");
+            }
+            $firstColumn[] = array_values($row)[$column];
+        }
+
+        return $firstColumn;
+
+    }
+
+    /**
+     * @return integer The value of the first column and row.
+     */
+    public function getFirstValue()
+    {
+        return isset($this->rows[0][0]) ? $this->rows[0][0] : null;
+    }
+
+
+
 
 }

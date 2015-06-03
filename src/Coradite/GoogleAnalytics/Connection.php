@@ -1,34 +1,41 @@
 <?php
-/**
- * Author:  Rachel Kellett
- * Company: Veneficus Ltd.
- * Date:    27/05/2015
 
- * [Magic Freebies Redesign] VGoogleAnalytics.php
+/*
+ * This file was added to the Wid'op package by Coradite.
+ *
+ * (c) Coradite <coradite@gmail.com>
+ *
+ * For the full copyright and license information, please read the LICENSE
+ * file that was distributed with this source code.
  */
 
 namespace Coradite\GoogleAnalytics;
 
-use Coradite\GoogleAnalytics\Client;
-use Coradite\GoogleAnalytics\Query;
 use Widop\HttpAdapter\CurlHttpAdapter;
 
 /**
- * Wrapper for timgws\GoogleAnalytics\API
- *
- * Class VGoogleAnalytics
+ * Google Analytics Connection.
  */
 class Connection extends \CApplicationComponent {
 
-
-  //public $clientId;
+  /** @var string */
   public $clientEmail;
+
+  /** @var string */
   public $privateKeyFile;
+
+  /** @var integer If you are mostly going to be using one profile id then set this */
   public $defaultProfileId;
 
+  /** @var Service */
   private $_service;
 
 
+  /**
+   * Get Service used to query the API.
+   *
+   * @return Service used to query the API
+   */
   public function getService()
   {
 
@@ -48,13 +55,12 @@ class Connection extends \CApplicationComponent {
 
   /**
    * Creates a command for execution.
-   * @param mixed $query the DB query to be executed. This can be either a string representing a SQL statement,
-   * or an array representing different fragments of a SQL statement. Please refer to {@link CDbCommand::__construct}
-   * for more details about how to pass an array as the query. If this parameter is not given,
-   * you will have to call query builder methods of {@link CDbCommand} to build the DB query.
-   * @return CDbCommand the DB command
+   *
+   * @param null $profileId The Analytics view 'profile' ID (see https://developers.google.com/analytics/devguides/reporting/core/v3/reference#ids)
+   *
+   * @return Command the DB command
    */
-  public function createQuery($query=null, $profileId=null)
+  public function createCommand($profileId=null)
   {
 
     $profileId = $profileId ? $profileId : $this->defaultProfileId;
@@ -63,7 +69,7 @@ class Connection extends \CApplicationComponent {
       $profileId = 'ga:'.$profileId;
     }
 
-    return new Query($this, $profileId, $query);//CDbCommand($this,$query);
+    return new Command($this, $profileId);
   }
 
 

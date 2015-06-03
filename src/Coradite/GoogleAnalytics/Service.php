@@ -18,13 +18,13 @@ namespace Coradite\GoogleAnalytics;
  */
 class Service
 {
-    /** @var \Widop\GoogleAnalytics\Client */
+    /** @var Client */
     protected $client;
 
     /**
      * Google analytics service constructor.
      *
-     * @param \Widop\GoogleAnalytics\Client $client The google analytics client.
+     * @param Client $client The google analytics client.
      */
     public function __construct(Client $client)
     {
@@ -34,7 +34,7 @@ class Service
     /**
      * Gets the google analytics client.
      *
-     * @return \Widop\GoogleAnalytics\Client The google analytics client.
+     * @return Client The google analytics client.
      */
     public function getClient()
     {
@@ -44,9 +44,9 @@ class Service
     /**
      * Sets the google analytics client.
      *
-     * @param \Widop\GoogleAnalytics\Client $client The google analytics client.
+     * @param Client $client The google analytics client.
      *
-     * @return \Widop\GoogleAnalytics\Service The google analytics service.
+     * @return Service The google analytics service.
      */
     public function setClient(Client $client)
     {
@@ -58,16 +58,17 @@ class Service
     /**
      * Queries the google analytics service.
      *
-     * @param \Widop\GoogleAnalytics\Query $query The google analytics query.
+     * @param Command $command The command with the query params
      *
-     * @throws \Widop\GoogleAnalytics\GoogleAnalyticsException If an error occured when querying the google analytics service.
+     * @return Response If an error occurred when querying the google analytics service.
      *
-     * @return \Widop\GoogleAnalytics\Response The google analytics response.
+     * @throws GoogleAnalyticsException If Query is invalid
+     *
      */
-    public function query(Query $query)
+    public function query(Command $command)
     {
         $accessToken = $this->getClient()->getAccessToken();
-        $uri = $query->build($accessToken);
+        $uri = $command->build($accessToken);
         $content = $this->getClient()->getHttpAdapter()->getContent($uri);
         $json = json_decode($content, true);
 
@@ -75,6 +76,6 @@ class Service
             throw GoogleAnalyticsException::invalidQuery(isset($json['error']) ? $json['error']['message'] : 'Invalid json');
         }
 
-        return new Response($json, $query);
+        return new Response($json, $command);
     }
 }

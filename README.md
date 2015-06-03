@@ -1,6 +1,8 @@
 # README
 
-[![Build Status](https://secure.travis-ci.org/widop/google-analytics.png)](http://travis-ci.org/widop/google-analytics)
+[![Build Status](https://secure.travis-ci.org/coradite/google-analytics.png)](http://travis-ci.org/coradite/google-analytics)
+
+This is an adaption of the Wid'op Google Analytics library for use with Yii. 
 
 The Wid'op Google Analytics library provides a way to use certificate-based authentication in server-to-server
 interactions with google analytics.
@@ -11,8 +13,8 @@ google analytics service.
 
 ## Documentation
 
- 1. [Installation](https://github.com/widop/google-analytics/blob/master/doc/installation.md)
- 2. [Usage](https://github.com/widop/google-analytics/blob/master/doc/usage.md)
+ 1. [Installation](https://github.com/coradite/google-analytics/blob/master/doc/installation.md)
+ 2. [Usage](https://github.com/coradite/google-analytics/blob/master/doc/usage.md)
 
 ## Testing
 

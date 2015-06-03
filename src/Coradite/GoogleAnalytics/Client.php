@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Wid'op package.
+ * This file is adapted from a Wid'op package.
  *
  * (c) Wid'op <contact@widop.com>
  *
@@ -29,7 +29,7 @@ class Client
     /** @var string */
     protected $privateKeyFile;
 
-    /** @var \Widop\HttpAdapterBundle\Model\HttpAdapterInterface */
+    /** @var \Widop\HttpAdapter\HttpAdapterInterface */
     protected $httpAdapter;
 
     /** @var string */
@@ -41,10 +41,15 @@ class Client
     /**
      * Creates a client.
      *
-     * @param string                                              $clientId       The client ID.
-     * @param string                                              $privateKeyFile The absolute private key file path.
-     * @param \Widop\HttpAdapterBundle\Model\HttpAdapterInterface $httpAdapter    The http adapter.
-     * @param string                                              $url            The google analytics service url.
+     * @param string $clientId The client ID.
+     *
+     * @param string $privateKeyFile The absolute private key file path.
+     *
+     * @param \Widop\HttpAdapter\HttpAdapterInterface $httpAdapter The http adapter.
+     *
+     * @param string $url The google analytics service url.
+     *
+     * @throws GoogleAnalyticsException
      */
     public function __construct(
         $clientId,
@@ -73,7 +78,7 @@ class Client
      *
      * @param string $clientId The client ID.
      *
-     * @return \Widop\GoogleAnalytics\Client The client.
+     * @return Client The client.
      */
     public function setClientId($clientId)
     {
@@ -97,9 +102,9 @@ class Client
      *
      * @param string $privateKeyFile The absolute private key file path.
      *
-     * @throws \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException If the private key file does not exist.
+     * @return Client If the private key file does not exist.
      *
-     * @return \Widop\GoogleAnalytics\Client The client.
+     * @throws GoogleAnalyticsException
      */
     public function setPrivateKeyFile($privateKeyFile)
     {
@@ -115,7 +120,7 @@ class Client
     /**
      * Gets the http adapter.
      *
-     * @return \Widop\HttpAdapterBundle\Model\HttpAdapterInterface The http adapter.
+     * @return \Widop\HttpAdapter\HttpAdapterInterface The http adapter.
      */
     public function getHttpAdapter()
     {
@@ -125,9 +130,9 @@ class Client
     /**
      * Sets the http adapter.
      *
-     * @param \Widop\HttpAdapterBundle\Model\HttpAdapterInterface $httpAdapter The http adapter.
+     * @param \Widop\HttpAdapter\HttpAdapterInterface $httpAdapter The http adapter.
      *
-     * @return \Widop\GoogleAnalytics\Client The client.
+     * @return Client The client.
      */
     public function setHttpAdapter(HttpAdapterInterface $httpAdapter)
     {
@@ -151,7 +156,7 @@ class Client
      *
      * @param string $url The google analytics service url.
      *
-     * @return \Widop\GoogleAnalytics\Client The client.
+     * @return Client The client.
      */
     public function setUrl($url)
     {
@@ -163,7 +168,7 @@ class Client
     /**
      * Gets the google OAuth access token.
      *
-     * @throws \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException If the access token can not be retrieved.
+     * @throws GoogleAnalyticsException If the access token can not be retrieved.
      *
      * @return string The access token.
      */
@@ -223,7 +228,7 @@ class Client
      *
      * @param string $jsonWebToken The JWT content.
      *
-     * @throws \Widop\GoogleAnalytics\Exception\GoogleAnalyticsException If an error occured when generating the signature.
+     * @throws GoogleAnalyticsException If an error occured when generating the signature.
      *
      * @return string The JWT signature.
      */

@@ -1,7 +1,7 @@
 <?php
 
 /*
- * This file is part of the Wid'op package.
+ * This file is adapted from a Wid'op package.
  *
  * (c) Wid'op <contact@widop.com>
  *
@@ -15,8 +15,9 @@ namespace Coradite\GoogleAnalytics;
  * Google Analytics Query.
  *
  * @author GeLo <geloen.eric@gmail.com>
+ * @author Coradite <coradite@gmail.com>
  */
-class Query
+class Command
 {
     /** @const The Google analytics service URL. */
     const URL = 'https://www.googleapis.com/analytics/v3/data/ga';
@@ -57,20 +58,17 @@ class Query
     /** @var string */
     protected $callback;
 
-    /** @var array */
-    protected $customMetricKeys;
-
-    /** @var array */
-    protected $customDimensionKeys;
 
     /**
      * Creates a google analytics query.
      *
-     * @param string $ids The google analytics query ids.
+     * @param Connection $connection The connection object
+     *
+     * @param $profileIds The Analytics view 'profile' ID (see https://developers.google.com/analytics/devguides/reporting/core/v3/reference#ids)
+     *
      */
-    public function __construct($connection, $profileIds, $query=null)
+    public function __construct($connection, $profileIds)
     {
-
 
         $this->_connection = $connection;
 
@@ -84,11 +82,7 @@ class Query
         $this->maxResults = 10000;
         $this->prettyPrint = false;
 
-        // results keys
-        $this->customMetricKeys = array();
-        $this->customDimensionKeys = array();
-
-        //todo Make query if string or array is passed in.
+        //@todo allow pass in raw query.
 
     }
 
@@ -107,7 +101,7 @@ class Query
      *
      * @param string $ids The google analytics query ids.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setIds($ids)
     {
@@ -141,7 +135,7 @@ class Query
      *
      * @param \DateTime | string $startDate The google analytics query start date.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setStartDate($startDate = null)
     {
@@ -158,7 +152,7 @@ class Query
     /**
      * Checks if the google analytics query has an end date.
      *
-     * @return boolean TRUE if the google analytics query has an ende date else FALSE.
+     * @return boolean TRUE if the google analytics query has an end date else FALSE.
      */
     public function hasEndDate()
     {
@@ -180,7 +174,7 @@ class Query
      *
      * @param \DateTime | string $endDate The google analytics query end date.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The Command.
      */
     public function setEndDate($endDate = null)
     {
@@ -194,39 +188,6 @@ class Query
         return $this;
     }
 
-    public function addCustomMetricKey($key, $metric)
-    {
-        $this->customMetricKeys[$metric] = $key;
-
-        return $this;
-    }
-
-    public function addCustomDimensionKey($key, $dimension)
-    {
-        $this->customDimensionKeys[$dimension] = $key;
-
-        return $this;
-    }
-
-    /**
-     * Gets the google analytics query metrics.
-     *
-     * @return array The google analytics query metrics.
-     */
-    public function getCustomDimensionKeys()
-    {
-        return $this->customDimensionKeys;
-    }
-
-    /**
-     * Gets the google analytics query metrics.
-     *
-     * @return array The google analytics query metrics.
-     */
-    public function getCustomMetricKeys()
-    {
-        return $this->customMetricKeys;
-    }
 
     /**
      * Checks if the google analytics query has metrics.
@@ -253,17 +214,14 @@ class Query
      *
      * @param array $metrics The google analytics query metrics.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setMetrics(array $metrics)
     {
         $this->metrics = array();
 
         foreach ($metrics as $key => $metric) {
-            $this->addMetric($metric);
-            if (is_string($key)) {
-                $this->addCustomMetricKey($key, $metric);
-            }
+            $this->addMetric($metric, $key);
         }
         
         return $this;
@@ -274,13 +232,17 @@ class Query
      *
      * @param string $metric The google analytics metric to add.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @param string | null $key The key you would for the metric in the results.
+     *
+     * @return \Command The command.
      */
     public function addMetric($metric, $key=null)
     {
-        $this->metrics[] = $metric;
-        if ($key){
-            $this->addCustomMetricKey($key, $metric);
+
+        if ($key) {
+            $this->metrics[$key] = $metric;
+        } else {
+            $this->metrics[] = $metric;
         }
 
         
@@ -312,17 +274,14 @@ class Query
      *
      * @param array $dimensions The google analytics query dimensions.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The query.
      */
     public function setDimensions(array $dimensions)
     {
         $this->dimensions = array();
 
         foreach ($dimensions as $key => $dimension) {
-            $this->addDimension($dimension);
-            if (is_string($key)) {
-                $this->addCustomDimensionKey($key, $dimension);
-            }
+            $this->addDimension($dimension, $key);
         }
         
         return $this;
@@ -333,14 +292,17 @@ class Query
      *
      * @param string $dimension the google analytics dimension to add.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @param string | null $key The key you would for the dimension in the results.
+     *
+     * @return Command The command.
      */
     public function addDimension($dimension, $key=null)
     {
-        $this->dimensions[] = $dimension;
-        if ($key) {
 
-            $this->addCustomDimensionKey($key, $dimension);
+        if ($key) {
+            $this->dimensions[$key] = $dimension;
+        } else {
+            $this->dimensions[] = $dimension;
         }
         
         return $this;
@@ -371,7 +333,7 @@ class Query
      *
      * @param array $sorts The google analytics query sorts.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setSorts(array $sorts)
     {
@@ -389,7 +351,7 @@ class Query
      *
      * @param string $sort A google analytics query sort to add.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function addSort($sort)
     {
@@ -423,7 +385,7 @@ class Query
      *
      * @param array $filters The google analytics query filters.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setFilters(array $filters)
     {
@@ -441,7 +403,7 @@ class Query
      *
      * @param string $filter the google analytics filter to add.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function addFilter($filter)
     {
@@ -475,7 +437,7 @@ class Query
      *
      * @param string $segment The google analytics query segment.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The query.
      */
     public function setSegment($segment)
     {
@@ -499,7 +461,7 @@ class Query
      *
      * @param integer $startIndex The google analytics start index.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The query.
      */
     public function setStartIndex($startIndex)
     {
@@ -523,7 +485,7 @@ class Query
      *
      * @param integer $maxResults The google analytics query max result count.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setMaxResults($maxResults)
     {
@@ -547,7 +509,7 @@ class Query
      *
      * @param boolean $prettyPrint The google analytics query pretty print option.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setPrettyPrint($prettyPrint)
     {
@@ -581,7 +543,7 @@ class Query
      *
      * @param string The google analytics query callback.
      *
-     * @return \Widop\GoogleAnalytics\Query The query.
+     * @return Command The command.
      */
     public function setCallback($callback)
     {
@@ -595,7 +557,7 @@ class Query
      *
      * @param string $accessToken The access token used to build the query.
      *
-     * @return string The builded query.
+     * @return string The built query.
      */
     public function build($accessToken)
     {
@@ -640,19 +602,88 @@ class Query
     /**
      * Queries the google analytics service.
      *
-     * @return \Widop\GoogleAnalytics\Response The google analytics response.
+     * @param bool $returnResponseObject Return the response (true) or the rows (false)
+     *
+     * @return Response The google analytics response.
      */
-    public function execute($returnResponse=false)
+    public function query($returnResponseObject=false)
     {
 
-        if ($returnResponse) {
+        if ($returnResponseObject) {
             return $this->_connection->service->query($this);
         }
+
+        $response = $this->_connection->service->query($this);
+
+        return $response->getRows();
+
+    }
+
+    /**
+     * Queries the google analytics service.
+     *
+     * @return array The response rows with meaningful column keys.
+     */
+    public function queryAll()
+    {
 
         $response = $this->_connection->service->query($this);
 
         return $response->getResults();
 
     }
+
+
+    /**
+     * Queries the google analytics service.
+     *
+     * @return array The first row from response rows with meaningful column keys.
+     */
+    public function queryRow()
+    {
+
+        $response = $this->_connection->service->query($this);
+
+        return $response->getFirstRow();
+
+    }
+
+    /**
+     * Queries the google analytics service.
+     *
+     * @param int|string $column Optional column number (starts at 0) or ga:param
+     *                           Will return first column if no column specified.
+     *
+     * @return array A column of the responses rows
+     *
+     * @throws \CException If the column wont match a dimension or metric in the query.
+     */
+    public function queryColumn($column = 0)
+    {
+
+        if (is_string($column) && !in_array($column, array_merge($this->metrics, $this->dimensions))) {
+            throw new \CException('Column to fetch must be a column number or a metric/dimension of this command.');
+        }
+
+        $response = $this->_connection->service->query($this);
+
+        return $response->getColumn($column);
+
+    }
+
+    /**
+     * Queries the google analytics service.
+     *
+     * @return integer The value of the first column and row in the responses rows.
+     */
+    public function queryScalar()
+    {
+
+        $response = $this->_connection->service->query($this);
+
+        return $response->getFirstValue();
+
+    }
+
 
 }
