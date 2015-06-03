@@ -1,5 +1,9 @@
 # CHANGELOG
 
+### 2.0.0
+  
+  * Adapted to work with Yii as a component.
+
 ### 1.0.1 (????-??-??)
 
  * bed8e07 - [Doc] Filter doesn't need to be urlencoded
