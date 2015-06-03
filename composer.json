@@ -1,5 +1,5 @@
 {
-    "name": "coradite/google-analytics",
+    "name": "coradite/yii-google-analytics",
     "description": "Google certificate-based authentication in server-to-server interactions with google analytics (Forked from widop/google-analytics)",
     "keywords": [ "google", "analytics", "server" ],
     "type": "library",
