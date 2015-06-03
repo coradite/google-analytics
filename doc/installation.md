@@ -59,9 +59,9 @@ At the end, you should have:
  * `private_key`: a PKCS12 certificate file
 
 
-## Configuration
+## Yii Configuration
 
-Now just you just have to add the following array to your configuration:
+Now you just have to add the following array to your config file:
 
 ``` php
     components => [
